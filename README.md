@@ -38,6 +38,14 @@ What you see is:
 1. Threads started this second (+10)
 2. Threads exited this second (-8)
 
+In case of error you'll see
+
+```
+[Error] 7
+```
+
+where 7 is curl return code. See [libcurl error codes](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
 # Configuration
 
 After import statements in the scipt file there is a dictionary **TEST_CONFIG**. Modify it at will.

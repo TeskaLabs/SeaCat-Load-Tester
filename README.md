@@ -17,38 +17,9 @@ The argument is optional and defaults to 20.
 
 You can kill the process by hitting ```Ctrl-C```
 
-# Output
-
-Output of the script will look similar to this:
-
-```
-[0 +10 -0]
-[10 +10 -0]
-[20 +10 -0]
-[30 +10 -0]
-[40 +10 -5]
-[45 +10 -8]
-[47 +10 -8]
-...
-```
-
-What you see is:
-
-0. Amount of running curl threads (45)
-1. Threads started this second (+10)
-2. Threads exited this second (-8)
-
-In case of error you'll see
-
-```
-[Error] 7
-```
-
-where 7 is curl return code. See [libcurl error codes](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
-
 # Configuration
 
-After import statements in the scipt file there is a dictionary **TEST_CONFIG**. Modify it at will.
+The script is configured by a configuration dictionary which is **inside the script** after import statements. The dictionary is named **TEST_CONFIG**. Modify it at will.
 
 **Example**:
 
@@ -63,6 +34,24 @@ TEST_CONFIG = {
 		{'host': 'apl1', 'paths': ['/test/service2', '/test/service2/example']},
 	],
 }
+TEST_CONFIG = {
+	'concentrators': [
+		{'ip':"192.168.0.20", 'port_from': 8000, 'port_to': 25499},
+		{'ip':"192.168.0.13", 'port_from': 8000, 'port_to': 25499},
+	],
+	'endpoints': [
+		{
+			'host': 'apl',
+			'paths': ['/FiskalServer/syncservice'],
+			'payload' : '/root/hessianreq_isAlive.bin'
+		},
+		{
+			'host': 'apl1',
+			'paths': ['/FiskalServer/syncservice'],
+			'payload' : '/root/hessianreq_isAlive.bin'
+		},
+	],
+}
 ```
 
 Here is an example of what commands will be executed from the script:
@@ -70,3 +59,35 @@ Here is an example of what commands will be executed from the script:
 - curl -H 'X-SC-HOST: apl1' http://192.168.0.13:22999/test/service2/example
 - curl -H 'X-SC-HOST: apl' http://192.168.0.20:8999/test/service2
 - ...
+
+# Output
+0. Amount of running curl threads (45)
+1. Threads started this second (+10)
+2. Threads exited this second (-8)
+
+**Script is launching new curl processes:**
+
+```
+[0 +10 -0]
+[10 +10 -0]
+[20 +10 -0]
+...
+```
+
+**Script is waiting for all curls to get response** (too large response time, server side troubles):
+
+```
+[1000 +0 -0]
+[1000 +0 -0]
+[1000 +0 -0]
+...
+```
+
+**A curl responded with an error code**:
+
+```
+[Error] 7
+```
+
+where 7 is curl return code. See [libcurl error codes](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+

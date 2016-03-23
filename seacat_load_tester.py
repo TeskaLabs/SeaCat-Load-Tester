@@ -6,18 +6,18 @@ from subprocess import Popen, PIPE, STDOUT
 
 TEST_CONFIG = {
 	'concentrators': [
-		{'ip':"90.183.120.10", 'port_from': 8000, 'port_to': 25499},
-		{'ip':"90.183.120.11", 'port_from': 8000, 'port_to': 25499},
+		{'ip':"192.168.0.20", 'port_from': 8000, 'port_to': 25499},
+		{'ip':"192.168.0.13", 'port_from': 8000, 'port_to': 25499},
 	],
 	'endpoints': [
 		{
 			'host': 'apl',
-			'paths': ['/FiskalServer/syncservice'],
+			'paths': ['/test/service1', '/test/service1/example'],
 			'payload' : '/root/hessianreq_isAlive.bin'
 		},
 		{
 			'host': 'apl1',
-			'paths': ['/FiskalServer/syncservice'],
+			'paths': ['/test/service2', '/test/service2/example'],
 			'payload' : '/root/hessianreq_isAlive.bin'
 		},
 	],

@@ -8,12 +8,12 @@ Load tester is a python script utilizing curl to randomly creat many user-define
 Run:
 
 ```
-python seacat_load_tester.py 20
+python seacat_load_tester.py 1000
 ```
 
-The script will run at most 20 concurrent curl http calls to addresses defined in configuration.
+The script will run at most 1000 concurrent curl processes that make http calls to addresses defined in configuration.
 
-The argument is optional and defaults to 20.
+The argument is *optional* and defaults to *20*.
 
 You can kill the process by hitting ```Ctrl-C```
 

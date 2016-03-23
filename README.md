@@ -30,16 +30,6 @@ TEST_CONFIG = {
 		{'ip':"192.168.0.13", 'port_from': 8000, 'port_to': 25499},
 	],
 	'endpoints': [
-		{'host': 'apl', 'paths': ['/test/service1', '/test/service1/example']},
-		{'host': 'apl1', 'paths': ['/test/service2', '/test/service2/example']},
-	],
-}
-TEST_CONFIG = {
-	'concentrators': [
-		{'ip':"192.168.0.20", 'port_from': 8000, 'port_to': 25499},
-		{'ip':"192.168.0.13", 'port_from': 8000, 'port_to': 25499},
-	],
-	'endpoints': [
 		{
 			'host': 'apl',
 			'paths': ['/FiskalServer/syncservice'],
@@ -54,6 +44,14 @@ TEST_CONFIG = {
 }
 ```
 
+The script then chooses a **random concentrator** and a **random port** from the specified range.
+
+Then the script chooses a **random endpoint** which is defined by
+
+0. **host**: value of header 'X-SC-HOST'
+1. **random path**: the URI part
+2. **payload**: path to the binary payload file. If not specified, a GET request is sent, otherwise *-X POST* and *-H "Content-Type: x-application/hessian""* options are set to curl
+
 Here is an example of what commands will be executed from the script:
 
 - curl -H 'X-SC-HOST: apl1' http://192.168.0.13:22999/test/service2/example
@@ -62,8 +60,8 @@ Here is an example of what commands will be executed from the script:
 
 # Output
 0. Amount of running curl threads (45)
-1. Threads started this second (+10)
-2. Threads exited this second (-8)
+1. curls started this second (+10)
+2. curls exited this second (-8)
 
 **Script is launching new curl processes:**
 

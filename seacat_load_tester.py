@@ -10,8 +10,16 @@ TEST_CONFIG = {
 		{'ip':"90.183.120.11", 'port_from': 8000, 'port_to': 25499},
 	],
 	'endpoints': [
-		{'host': 'apl', 'paths': ['/FiskalServer/fileservice', '/FiskalServer/fileupload']},
-		{'host': 'apl1', 'paths': ['/FiskalServer/fileservice', '/FiskalServer/fileupload']},
+		{
+			'host': 'apl',
+			'paths': ['/FiskalServer/syncservice'],
+			'payload' : '/root/hessianreq_isAlive.bin'
+		},
+		{
+			'host': 'apl1',
+			'paths': ['/FiskalServer/syncservice'],
+			'payload' : '/root/hessianreq_isAlive.bin'
+		},
 	],
 }
 
@@ -20,21 +28,22 @@ DEVNULL = open(os.devnull, 'w')
 def create_tester_subprocess():
 	# Pick random concentrator
 	concentrators = TEST_CONFIG.get('concentrators', [])
-	c = concentrators[random.randint(0, len(concentrators)-1)]
-	# Random endpoint
-	endpoints = TEST_CONFIG.get('endpoints', [])
-	e = endpoints[random.randint(0, len(endpoints)-1)]
-	# Random path
-	p = e.get("paths", [])[random.randint(0, len(e.get("paths", []))-1)]
-
-	host 	= e.get("host")
-	ip 		= c.get("ip")
-	port 	= str(random.randint(c.get("port_from"), c.get("port_to")))
-	path 	= p
+	endpoints 			= TEST_CONFIG.get('endpoints', [])
+	# Concentrator
+	rand_concentrator 	= concentrators[random.randint(0, len(concentrators)-1)]
+	ip 					= rand_concentrator.get("ip")
+	rand_port 			= str(random.randint(rand_concentrator.get("port_from"), rand_concentrator.get("port_to")))
+	# Endpoint
+	rand_endpoint 		= endpoints[random.randint(0, len(endpoints)-1)]
+	rand_path 			= rand_endpoint.get('paths', [])[random.randint(0, len(rand_endpoint.get("paths", []))-1)]
+	payload 			= rand_endpoint.get("payload")
+	host 				= rand_endpoint.get("host")
 
 	# Prepare curl
-	cmd = "curl -H 'X-SC-HOST: {}' ".format(host)
-	cmd += 30 * (" http://{}:{}{}".format(ip, port, path))
+	cmd = "curl -H 'X-SC-HOST: {}'".format(host)
+	if payload is not None:
+		cmd += " -H 'Content-Type: x-application/hessian' -X POST --data-binary @{}".format(payload)
+	cmd += 30 * (" http://{}:{}{}".format(ip, rand_port, rand_path))
 	
 	# Return subprocess obj
 	return subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=DEVNULL)
